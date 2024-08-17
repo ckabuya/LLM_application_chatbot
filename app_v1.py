@@ -15,26 +15,20 @@ conversation_history = []
 def home():
     return render_template('index.html')
 
-MAX_HISTORY_TOKENS = 512  # Adjust based on model's capacity
-
 @app.route('/chatbot', methods=['POST'])
 def handle_prompt():
     data = request.get_data(as_text=True)
     data = json.loads(data)
     input_text = data['prompt']
 
-    # Truncate conversation history
-    truncated_history = conversation_history[-6:]  # Keep last 3 exchanges
-    history = "\n".join(truncated_history)
+    # Create conversation history string
+    history = "\n".join(conversation_history)
 
-    # Tokenize and manage token count
-    input_ids = tokenizer.encode(history + "\n" + input_text, return_tensors="pt")
-    if input_ids.shape[1] > MAX_HISTORY_TOKENS:
-        # Truncate from the beginning
-        input_ids = input_ids[:, -MAX_HISTORY_TOKENS:]
+    # Tokenize the input text and history
+    inputs = tokenizer.encode_plus(history, input_text, return_tensors="pt")
 
     # Generate the response from the model
-    outputs = model.generate(input_ids, max_length=60)
+    outputs = model.generate(**inputs, max_length= 60)  # max_length will cause the model to crash at some point as history grows
 
     # Decode the response
     response = tokenizer.decode(outputs[0], skip_special_tokens=True).strip()
@@ -42,10 +36,6 @@ def handle_prompt():
     # Add interaction to conversation history
     conversation_history.append(input_text)
     conversation_history.append(response)
-
-    # Keep conversation history at a manageable size
-    if len(conversation_history) > 20:
-        conversation_history = conversation_history[-20:]
 
     return response
 

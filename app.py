@@ -15,6 +15,7 @@ conversation_history = []
 def home():
     return render_template('index.html')
 
+conversation_history = []
 MAX_HISTORY_TOKENS = 512  # Adjust based on model's capacity
 
 @app.route('/chatbot', methods=['POST'])

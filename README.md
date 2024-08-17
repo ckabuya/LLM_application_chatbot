@@ -24,8 +24,8 @@ The project consists of two main components:
 ## Setup Instructions
 1. Clone this repository:
    ```
-   git clone https://github.com/ckabuya/chatbot-web-interface.git
-   cd chatbot-web-interface
+   git clone https://github.com/ckabuya/LLM_application_chatbot.git
+   cd LLM_application_chatbot
    ```
 
 2. Set up a virtual environment (optional but recommended):

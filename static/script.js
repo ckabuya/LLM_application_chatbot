@@ -42,7 +42,7 @@ const sendMessage = async (message) => {
   messagesContainer.appendChild(loadingtextElement);
 
   async function makePostRequest(msg) {
-    const url = 'https://localhost:5000/chatbot';  // Make a POST request to this url
+    const url = 'http://localhost:5000/chatbot';  // Make a POST request to this url
     const requestBody = {
       prompt: msg
     };

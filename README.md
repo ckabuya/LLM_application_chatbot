@@ -100,5 +100,5 @@ Contributions to improve the project are welcome. Please follow these steps:
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
-- Thanks to Hugging Face for the Transformers library and pre-trained models
+- Thanks to Hugging Face for the Transformers library and pre-trained models, IBM Skills Network
 - Inspired by ChatGPT and other conversational AI interfaces

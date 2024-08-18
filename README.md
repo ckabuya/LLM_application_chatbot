@@ -9,6 +9,7 @@ After completing this project, you will be able to:
 - Integrate a pre-trained chatbot model into a Flask server
 - Implement communication between a web page and the back-end server
 - Handle conversation history in a chatbot application
+- Identify and address limitations in chatbot implementations
 
 ## Prerequisites
 - Python 3.7+
@@ -25,7 +26,6 @@ The project consists of two main components:
 1. Clone this repository:
    ```
    git clone https://github.com/ckabuya/LLM_application_chatbot.git
-   cd LLM_application_chatbot
    ```
 
 2. Set up a virtual environment (optional but recommended):
@@ -36,7 +36,7 @@ The project consists of two main components:
 
 3. Install the required dependencies:
    ```
-   pip install flask flask-cors transformers torch
+   pip install -r requirements.txt
    ```
 
 4. Run the Flask server:
@@ -48,23 +48,45 @@ The project consists of two main components:
 
 ## Project Files
 - `app.py`: The main Flask application file containing the server logic and chatbot integration
-- `templates/index.html`: The HTML template for the front-end (not provided in the shared code)
-- `static/css/styles.css`: CSS file for styling (not provided in the shared code)
-- `static/script.js`: JavaScript file for front-end functionality (not provided in the shared code)
+- `templates/index.html`: The HTML template for the front-end
+- `static/css/styles.css`: CSS file for styling
+- `static/script.js`: JavaScript file for front-end functionality
 
-## Code Overview
-The `app.py` file contains the following key components:
+## Original Implementation Limitations
+The initial implementation of the chatbot based on the IBM Course forked from https://github.com/ibm-developer-skills-network/LLM_application_chatbot had several limitations:
 
-- Flask app initialization and CORS setup
-- Loading of the BlenderBot model and tokenizer
-- A route for serving the home page
-- A `/chatbot` endpoint that handles POST requests for chatbot interactions
-- Conversation history management
+1. **Conversation History Management**: The entire conversation history was stored in memory and included in each request to the model, leading to growing input sizes.
 
-The chatbot uses the `facebook/blenderbot-400M-distill` model from Hugging Face Transformers. It maintains a conversation history to provide context for each interaction.
+2. **Token Limit Exceeded**: As conversations grew longer, the input to the model would exceed its maximum token limit, causing the chatbot to crash after approximately 5 interactions.
 
-## Note on Scalability
-The current implementation stores the entire conversation history in memory and includes it in each request to the model. This approach may lead to performance issues or crashes with very long conversations. For a production environment, consider implementing a more scalable solution for managing conversation history.
+3. **Memory Usage**: Storing the full conversation history in memory could lead to excessive memory usage over time.
+
+4. **Error Handling**: The original implementation lacked robust error handling, making it difficult to diagnose and recover from issues.
+
+5. **Scalability**: The approach of keeping the entire conversation history in memory is not scalable for long-running or multi-user scenarios.
+
+## Improved Implementation
+To address the limitations of the original implementation, the following improvements have been made:
+
+1. **Truncated Conversation History**: The chatbot now keeps only the last few interactions (3-4 exchanges) in the history, maintaining recent context without overwhelming the model.
+
+2. **Dynamic Input Length Management**: The code now respects the model's maximum input length, truncating the input when necessary to prevent crashes.
+
+3. **Global Variable Usage**: The `conversation_history` is properly managed as a global variable, resolving scope-related errors.
+
+4. **Error Handling**: A try-except block has been implemented to catch and handle exceptions gracefully, improving the chatbot's reliability.
+
+5. **Debug Mode**: The Flask app now runs in debug mode during development, facilitating easier identification and resolution of issues.
+
+6. **Conversation Management**: The overall length of the conversation history is now managed, preventing unbounded growth of the history list.
+
+These improvements allow the chatbot to handle longer conversations without crashing and provide a more stable user experience.
+
+## Future Enhancements
+- Implement a database solution for storing conversation history
+- Add user authentication and individual session management
+- Explore more advanced language models for improved conversational abilities
+- Implement more extensive logging and monitoring
 
 ## Contributing
 Contributions to improve the project are welcome. Please follow these steps:
